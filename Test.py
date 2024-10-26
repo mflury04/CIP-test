@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
@@ -12,11 +13,20 @@ import time
 
 # URL der Amavita-Website
 url = "https://www.amavita.ch/de?srsltid=AfmBOoqy7INqIdgsbs250nSeWEnMKIxJGgFOhcPFGRX_O18htqmBWpgk"
-#
-# request approach
-page = requests.get(url)
-soup = BeautifulSoup(page.text, 'html.parser')
-print(soup.prettify())
+# User-Agent-Header hinzufügen, um die Anfrage wie von einem Browser aussehen zu lassen
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36"
+}
+
+# Anfrage mit Header senden
+page = requests.get(url, headers=headers)
+
+# Überprüfen, ob die Seite erfolgreich geladen wurde
+if page.status_code == 200:
+    soup = BeautifulSoup(page.text, 'html.parser')
+    print(soup.prettify())
+else:
+    print(f"Fehler beim Laden der Seite: Statuscode {page.status_code}")
 
 # Initialisiere den Webdriver und öffnet die Webseite
 driver = webdriver.Chrome()
